@@ -13,10 +13,10 @@ function Recipes() {
   const [vegetarian, setVegetarian] = useState(false);
 
   return <Query query={recipesQuery} variables={{ vegetarian }}>
-    {({ data, loading, error }) => {
+    {({ data, loading, error, refetch }) => {
       if (loading) { return <p>Loading...</p> }
       if (error) { return <p>Something wrong happen...</p> }
-      // console.log(data)
+      console.log(data)
       return <div>
         <input type="checkbox" checked={vegetarian} onChange={e => setVegetarian(!vegetarian)} /> vegetarian only
         <ul>{data.recipes.map(({ id, title, vegetarian, isStarred }) =>
@@ -45,6 +45,7 @@ function Recipes() {
             </Mutation>
           </li>)}
         </ul>
+        <button onClick={() => refetch()}>Refresh</button>
       </div>
     }}
   </Query>
