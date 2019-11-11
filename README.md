@@ -40,5 +40,13 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
 ### `yarn server`
 
-Runs GraphQL server.<br />
+Runs GraphQL server with delay between requests (1400ms).<br />
 Open [http://localhost:4000](http://localhost:4000) to view playground.
+
+### `yarn server:fast`
+
+Runs GraphQL server without delay between requests.<br />
+
+### `yarn server:medium`
+
+Runs GraphQL server with delay between requests (500ms).<br />

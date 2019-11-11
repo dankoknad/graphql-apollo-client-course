@@ -1,6 +1,13 @@
 import React, { useState } from 'react';
-import { Query } from "react-apollo";
+import { Query, Mutation } from "react-apollo";
 import { recipesQuery } from "../queries/recipesQuery";
+import gql from "graphql-tag";
+
+const updateRecipeStarredMutation = gql`
+  mutation updateRecipeStarred($id: ID!, $isStarred: Boolean!) {
+    updateRecipeStarred (id: $id, isStarred: $isStarred) @client
+  }
+`
 
 function Recipes() {
   const [vegetarian, setVegetarian] = useState(false);
@@ -12,7 +19,32 @@ function Recipes() {
       // console.log(data)
       return <div>
         <input type="checkbox" checked={vegetarian} onChange={e => setVegetarian(!vegetarian)} /> vegetarian only
-        <ul>{data.recipes.map(rec => <div key={rec.id}>{rec.title} | vegetarian: {rec.vegetarian ? "Yes" : "No"}</div>)}</ul>
+        <ul>{data.recipes.map(({ id, title, vegetarian, isStarred }) =>
+          <li key={id}>
+            {title} |
+            vegetarian: {vegetarian ? "Yes" : "No"} |
+            <Mutation
+              mutation={updateRecipeStarredMutation}
+              refetchQueries={[
+                { query: recipesQuery, variables: { vegetarian: true } },
+                { query: recipesQuery, variables: { vegetarian: false } }
+              ]}
+              awaitRefetchQueries={true}
+            >
+              {(updateRecipeStarred, { loading, error }) => (
+                <span
+                  onClick={() => updateRecipeStarred({
+                    variables: {
+                      isStarred: !isStarred,
+                      id
+                    }
+                  })}
+                  style={{ cursor: "pointer", color: isStarred ? "orange" : "gray" }}
+                  role="img"> ⭐ </span>
+              )}
+            </Mutation>
+          </li>)}
+        </ul>
       </div>
     }}
   </Query>

@@ -6,5 +6,6 @@ export const recipesQuery = gql`
       id
       title
       vegetarian
+      isStarred @client
     }
   }`
