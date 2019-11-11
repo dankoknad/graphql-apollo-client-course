@@ -1,20 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Query } from "react-apollo";
-import gql from "graphql-tag";
-
-const recipesQuery = gql`{
-  recipes {
-    id
-    title
-  }
-}`
+import { recipesQuery } from "../queries/recipesQuery";
 
 function Recipes() {
-  return <Query query={recipesQuery}>
+  const [vegetarian, setVegetarian] = useState(false);
+
+  return <Query query={recipesQuery} variables={{ vegetarian }}>
     {({ data, loading, error }) => {
       if (loading) { return <p>Loading...</p> }
       if (error) { return <p>Something wrong happen...</p> }
-      return data.recipes.map(rec => <div key={rec.id}>{rec.title}</div>)
+      // console.log(data)
+      return <div>
+        <input type="checkbox" checked={vegetarian} onChange={e => setVegetarian(!vegetarian)} /> vegetarian only
+        <ul>{data.recipes.map(rec => <div key={rec.id}>{rec.title} | vegetarian: {rec.vegetarian ? "Yes" : "No"}</div>)}</ul>
+      </div>
     }}
   </Query>
 }
